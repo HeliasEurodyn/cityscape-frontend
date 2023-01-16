@@ -266,3 +266,22 @@ li { /* styles all li elements*/
 /*  width: 100%;*/
 /*}*/
 
+.page-item-label{
+  padding-top: 4px;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.header-pagination {
+  border: 1px solid #51bcda !important;
+  background-color: #ffffffe6;
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 0px;
+  margin: 11px 1px 1px 5px;
+  font-weight: 600;
+  font-size: 0.8571em;
+  font-style: normal;
+  color: #309ea0;
+}
