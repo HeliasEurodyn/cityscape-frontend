@@ -18,6 +18,7 @@ export class VarcharInputComponent implements OnInit {
   @Output() focusEvent = new EventEmitter<FocusEvent>();
   @Output() eventOccured = new EventEmitter<any>();
   @Input() mask: String = '';
+  @Input() placeholder: String = '';
   public customPatterns = { 'J': { pattern: new RegExp('\[a-zA-Z\\-0-9\]')} };
 
   constructor() {

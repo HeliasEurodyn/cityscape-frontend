@@ -2,6 +2,7 @@
        class="form-control"
        [readonly]="!editable"
        mask="{{mask}}"
+       placeholder="{{placeholder}}"
        [patterns]="customPatterns"
        [specialCharacters]="[ '[' ,']' , '\\' ]"
        [(ngModel)]="componentPersistEntityFieldDTO.value"

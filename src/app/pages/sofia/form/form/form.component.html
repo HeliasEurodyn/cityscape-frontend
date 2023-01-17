@@ -128,6 +128,7 @@
                                        [componentPersistEntityFieldDTO]="formcontrol.formControlField.componentPersistEntityField"
                                        (eventOccured)="fieldEventOccured($event)"
                                        [mask]="(!!formcontrol.formControlField.mask)?formcontrol.formControlField.mask:''"
+                                       [placeholder]="(!!formcontrol.formControlField.placeholder)?formcontrol.formControlField.placeholder:''"
                                        [editable]="formcontrol.formControlField.editable">
                     </app-varchar-input>
                     <div class="category" [innerHTML]="formcontrol.formControlField.message"></div>

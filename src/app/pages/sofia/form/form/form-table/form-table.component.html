@@ -44,6 +44,7 @@
             [ngClass]="{'requider-field': formComponentCell.formControl.formControlField.required}"
             [editable]="formComponentCell.formControl.formControlField.editable"
             [mask]="(!!formComponentCell.formControl.formControlField.mask)?formComponentCell.formControl.formControlField.mask:''"
+            [placeholder]="(!!formComponentCell.formControl.formControlField.placeholder)?formComponentCell.formControl.formControlField.placeholder:''"
             (keydownEvent)="tableFieldKeyDown($event, formComponentCell.id, formControlLine,
                                    formcontrol.formControlTable.formControlLines,
                                    formcontrol.formControlTable)"
