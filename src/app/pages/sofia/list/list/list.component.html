@@ -458,6 +458,18 @@
                 </table>
                 <!-- Pagination -->
                 <ul *ngIf="this.listDto?.hasPagination" class="pagination pull-right">
+                  <li class="page-item page-item-label">
+                    Page
+                  </li>
+                  <li class="page-item">
+                    <a aria-label="First" (click)="navigateToPage(0)"
+                       class="page-link"
+                       disabled="">
+                      <span aria-hidden="true">
+                        <i aria-hidden="true" class="fa fa-angles-left"></i>
+                      </span>
+                    </a>
+                  </li>
                   <li class="page-item">
                     <a aria-label="Previous" (click)="navigateToPage(this.listResultsData?.currentPage-1)"
                        class="page-link"
@@ -470,8 +482,7 @@
                        *ngIf="this.showPrevPagination">{{this.listResultsData?.currentPage}}</a>
                   </li>
                   <li class="page-item active">
-                    <a class="page-link"
-                       (click)="navigateToPage(this.listResultsData?.currentPage)">{{listResultsData?.currentPage + 1}}</a>
+                    <a class="page-link">{{listResultsData?.currentPage + 1}}</a>
                   </li>
                   <li class="page-item">
                     <a class="page-link" (click)="navigateToPage(this.listResultsData?.currentPage+1)"
@@ -482,6 +493,15 @@
                        class="page-link">
                       <span aria-hidden="true"><i aria-hidden="true" class="fa fa-angle-right"></i></span>
                     </a>
+                  </li>
+                  <li class="page-item">
+                    <a aria-label="Next" (click)="navigateToPage(this.listResultsData?.totalPages-1)"
+                       class="page-link">
+                      <span aria-hidden="true"><i aria-hidden="true" class="fa fa-angles-right"></i></span>
+                    </a>
+                  </li>
+                  <li class="page-item page-item-label">
+                    of Total {{this.listResultsData?.totalPages}} Pages
                   </li>
                 </ul>
               </div>
