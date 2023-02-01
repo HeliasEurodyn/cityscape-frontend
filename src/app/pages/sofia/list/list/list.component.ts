@@ -54,7 +54,7 @@ export class ListComponent extends PageComponent implements OnInit, OnDestroy, A
               private activatedRoute: ActivatedRoute,
               private tableComponentService: TableComponentService,
               private title: Title,
-              private listScriptsService: ListScriptsService,
+              public listScriptsService: ListScriptsService,
               private dynamicCssScriptLoader: DynamicCssScriptLoaderService,
               private languageService: LanguageService,
               private listSearchService: ListSearchService) {

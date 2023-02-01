@@ -5,6 +5,7 @@ import {ListComponent} from '../../../pages/sofia/list/list/list.component';
 import {DynamicStaticJavascriptLoaderService} from './dynamic-static-javascript-loader.service';
 import {DynamicRequestService} from '../../crud/sofia/dynamic-request.service';
 import {ListComponentFieldDTO} from '../../../dtos/sofia/list/list-component-field-d-t-o';
+import {NotificationService} from './notification.service';
 
 declare function registerListDynamicScript(id, list): any;
 
@@ -46,7 +47,8 @@ export class ListScriptsService {
   constructor(private dynamicJavaScriptLoader: DynamicJavaScriptLoaderService,
               private dynamicRequestService: DynamicRequestService,
               private navigatorService: CommandNavigatorService,
-              private staticJavascriptLoader: DynamicStaticJavascriptLoaderService) {
+              private staticJavascriptLoader: DynamicStaticJavascriptLoaderService,
+              private notificationService: NotificationService) {
   }
 
   loadWithPromise(list: any): Promise<any> {
@@ -95,7 +97,6 @@ export class ListScriptsService {
     });
   };
 
-
   /*
  *  Get data from  url
  * */
@@ -104,8 +105,6 @@ export class ListScriptsService {
       callback(data);
     });
   };
-
-
 
   public postToBackend = (url: string, data: any, callback: (n: any) => any) => {
     this.dynamicRequestService.postToBackend(url, data).subscribe(response => {
@@ -154,5 +153,9 @@ export class ListScriptsService {
   public pivotCellClick(id, field) {
     pivotCellClick(id, field);
   }
+
+  public notificationDialog(horizontalPosition: string, verticalPosition: string, type: string, icon: string, message: string) {
+    this.notificationService.showNotification(horizontalPosition, verticalPosition, type, icon, message);
+  };
 
 }
