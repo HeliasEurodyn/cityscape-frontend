@@ -126,6 +126,9 @@ import { SseNotificationTemplateListComponent } from './pages/sofia/sse-notifica
 import { SseNotificationTemplateFormComponent } from './pages/sofia/sse-notification-template/sse-notification-template-form/sse-notification-template-form.component';
 import { BusinessUnitDesignerFormComponent } from './pages/sofia/business-unit-designer/business-unit-designer-form/business-unit-designer-form.component';
 import { BusinessUnitDesignerListComponent } from './pages/sofia/business-unit-designer/business-unit-designer-list/business-unit-designer-list.component';
+import { Neo4jGraphComponent } from './pages/cityscape/neo4j-graph/neo4j-graph.component';
+import { Neo4jNodeInfoCardComponent } from './pages/cityscape/neo4j-node-info-card/neo4j-node-info-card.component';
+import { Neo4jRelationshipInfoCardComponent } from './pages/cityscape/neo4j-relationship-info-card/neo4j-relationship-info-card.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -228,7 +231,10 @@ import { BusinessUnitDesignerListComponent } from './pages/sofia/business-unit-d
     SseNotificationTemplateListComponent,
     SseNotificationTemplateFormComponent,
     BusinessUnitDesignerFormComponent,
-    BusinessUnitDesignerListComponent
+    BusinessUnitDesignerListComponent,
+    Neo4jGraphComponent,
+    Neo4jNodeInfoCardComponent,
+    Neo4jRelationshipInfoCardComponent
   ],
   imports: [
     BrowserAnimationsModule,

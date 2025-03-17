@@ -6,6 +6,7 @@ import {catchError} from 'rxjs/operators';
 import {HttpErrorResponceService} from '../services/system/sofia/http-error-responce.service';
 import {NotificationService} from '../services/system/sofia/notification.service';
 import {Router} from '@angular/router';
+import { IGNORE_INTERCEPTOR } from 'app/constants/ignore-interceptor';
 
 @Injectable()
 export class HttpRequestErrorInterceptor implements HttpInterceptor {
@@ -25,6 +26,10 @@ export class HttpRequestErrorInterceptor implements HttpInterceptor {
           const response = JSON.parse(errorResponce.error);
           this.httpErrorResponceService.setNewErrorMessage(response.message);
           return throwError(errorResponce);
+        }
+
+        if (request.context.get(IGNORE_INTERCEPTOR)) {
+          return next.handle(request); // Skip the interceptor
         }
 
         switch (errorResponce.status) {

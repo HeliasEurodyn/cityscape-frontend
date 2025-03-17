@@ -1,0 +1,44 @@
+<table *ngIf="relationship" class="table table-striped table-borderless mt-3">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td><input type="text" class="form-control-plaintext" value="id" readonly></td>
+            <td><input type="text" class="form-control-plaintext" value="{{ relationship?.identity }}" readonly></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="text" class="form-control-plaintext" value="start node" readonly></td>
+            <td><input type="text" class="form-control-plaintext" value="{{ relationship?.start }}" readonly></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="text" class="form-control-plaintext" value="end node" readonly></td>
+            <td><input type="text" class="form-control-plaintext" value="{{ relationship?.end }}" readonly></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="text" class="form-control-plaintext" value="type" readonly></td>
+            <td><input type="text" class="form-control-plaintext" [(ngModel)]="relationship.type" [readonly]="relationship?.identity != null"></td>
+        </tr>
+        <tr *ngFor="let property of relationship.properties; let i = index">
+            <td><button title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
+                        class="fa-solid fa-close" (click)="deleteRelationshipProperty(i)"></i></button></td>
+            <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.name"
+                    [readonly]="property.name == 'ngsocColor'"></td>
+            <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.value"
+                    [readonly]="property.name == 'ngsocColor'"></td>
+        </tr>
+    </tbody>
+</table>
+<div *ngIf="relationship" class="button-container">
+    <button title="Add" type="button" (click)="addRelationshipProperty()" class="btn btn-outline-success btn-icon btn-sm m-0"><i
+            class="fa-solid fa-plus"></i></button>
+    <input type="color" id="html5colorpicker" (change)="changeColor($event)" [value]="nodeColor">
+</div>

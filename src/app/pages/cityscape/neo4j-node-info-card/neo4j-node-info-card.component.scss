@@ -1,0 +1,36 @@
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    // margin-left: 5%;
+}
+
+input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+input[type="color"]:hover {
+    border-color: #28a745;
+}
+
+.btn-chips{
+    margin: 1px;
+    padding: 10px;
+  }
+  
+.chip-col{
+    padding-right: 0px;
+    padding-left: 2px;
+    margin-bottom: 4px;
+    height: 100%;
+}
+
+.chip-row{
+    padding-left: 8px;
+}

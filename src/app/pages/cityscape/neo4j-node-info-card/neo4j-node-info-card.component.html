@@ -1,0 +1,50 @@
+
+<ng-container *ngIf="node">
+    <div class="row chip-row">
+        <div *ngFor="let label of node.labels; let i = index" class="col-auto chip-col">
+            <button class="btn btn-outline-primary btn-round btn-chips">
+                <i class="fa fa-times btn-delete-node" (click)="deleteNodeLabel(i)"></i>
+                {{ label }}
+            </button>
+        </div>
+
+        <div class="col-auto chip-col">
+            <div class="input-group">
+                <input type="text" class="form-control rounded-pill" placeholder="Add label" [(ngModel)]="newLabel" style="border: 2px solid #51cbce;">
+                <span class="input-group-text bg-white border-0">
+                    <i style="color: #52cbce" class="fa fa-plus" (click)="addNodeLabel()"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</ng-container> 
+
+<table *ngIf="node" class="table table-striped table-borderless mt-3">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td><input type="text" class="form-control-plaintext" value="id" readonly></td>
+            <td><input type="text" class="form-control-plaintext" value="{{ node?.identity }}" readonly></td>
+        </tr>
+        <tr *ngFor="let property of node.properties; let i = index">
+            <td><button title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
+                        class="fa-solid fa-close" (click)="deleteNodeProperty(i)"></i></button></td>
+            <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.name"
+                    [readonly]="property.name == 'ngsocColor'"></td>
+            <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.value"
+                    [readonly]="property.name == 'ngsocColor'"></td>
+        </tr>
+    </tbody>
+</table>
+<div *ngIf="node" class="button-container">
+    <button title="Add" type="button" (click)="addNodeProperty()" class="btn btn-outline-success btn-icon btn-sm m-0"><i
+            class="fa-solid fa-plus"></i></button>
+    <input type="color" id="html5colorpicker" (change)="changeColor($event)" [value]="nodeColor">
+</div>
