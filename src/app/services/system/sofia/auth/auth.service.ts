@@ -37,4 +37,8 @@ export class AuthService {
       socialProvider: 'LOCAL'
     }, httpOptions);
   }
+
+  isUserLoggedIn(): boolean {
+    return !!localStorage.getItem('jwt_token'); 
+  }
 }

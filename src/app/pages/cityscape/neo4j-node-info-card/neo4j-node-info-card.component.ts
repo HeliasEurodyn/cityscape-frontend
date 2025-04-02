@@ -1,10 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ComponentRef } from '@angular/core';
 import { Neo4jNodeDTO, Neo4jNodePropertyDTO } from 'app/dtos/cityscape/neo4j/neo4j-node-dto';
-import { HttpError } from 'app/dtos/sofia/http/http-error';
 import { Neo4jService } from 'app/services/crud/cityscape/neo4j.service';
 import { NotificationService } from 'app/services/system/sofia/notification.service';
-import * as e from 'express';
+import { CommandNavigatorService } from '../../../services/system/sofia/command-navigator.service';
 
 
 @Component({
@@ -12,44 +11,28 @@ import * as e from 'express';
   templateUrl: './neo4j-node-info-card.component.html',
   styleUrls: ['./neo4j-node-info-card.component.scss']
 })
-export class Neo4jNodeInfoCardComponent implements OnInit {
-  @Output() nodeUpdatedEmmiter: EventEmitter<Neo4jNodeDTO> = new EventEmitter<Neo4jNodeDTO>();
-
-  // private modalElement: HTMLElement | null = null;
+export class Neo4jNodeInfoCardComponent {
 
   node: Neo4jNodeDTO = null;
   nodeId: number;
   nodeColor: String;
   newLabel: string = '';
 
-  constructor(private el: ElementRef, private neo4jService: Neo4jService, private notificationService: NotificationService) { }
+  constructor(private el: ElementRef,
+    private neo4jService: Neo4jService,
+    private notificationService: NotificationService,
+    private commandNavigatorService: CommandNavigatorService,) { }
 
-  ngOnInit(): void {
-  }
-
-  loadNodeFromServer(nodeId: number) {
-    this.nodeId = nodeId;
-    this.neo4jService.getNodeById(this.nodeId).subscribe(
-      (response: any) => {
-        this.node = response;
-        const ngsocColor = this.node.properties.find((obj) => obj.name == 'ngsocColor')
-        if (ngsocColor) {
-          this.nodeColor = ngsocColor.value;
-        } else {
-          this.nodeColor = '#FF5733';
-        }
-      },
-      (error) => {
-        console.error('Error receiving data', error);
-      }
-    )
-  }
 
   setNode(node: Neo4jNodeDTO) {
-    this.node = node;
+    this.node = JSON.parse(JSON.stringify(node));
+    console.log(this.node);
     const ngsocColor = node.properties.find((obj) => obj.name == 'ngsocColor');
+    console.log(ngsocColor);
     if (ngsocColor) {
       this.nodeColor = ngsocColor.value;
+    } else {
+      this.nodeColor = "#FF5733"
     }
   }
 
@@ -64,20 +47,16 @@ export class Neo4jNodeInfoCardComponent implements OnInit {
     }
   }
 
-  saveNode(nodeId: number) {
+  updateNodeToServer(nodeId: number) {
     if (nodeId != null) {
       this.neo4jService.updateNodeById(nodeId, this.node).subscribe(
         (response: Neo4jNodeDTO) => {
-          this.nodeUpdatedEmmiter.emit(response);
+          console.log('info-card-updateeeeeeee');
+          this.node = response;
+          this.neo4jService.notifyNodeUpdated(response);
         }
       );
-      return this.node;
-    } else {
-      this.neo4jService.createNode(this.node).subscribe(
-
-      )
     }
-
   }
 
   deleteNode(nodeId: number) {
@@ -89,9 +68,7 @@ export class Neo4jNodeInfoCardComponent implements OnInit {
       error: (response: HttpErrorResponse) => {
         this.notificationService.showNotification('top', 'center', 'alert-danger', 'fa-thumbs-down', response?.error?.message);
       }
-    }
-
-    );
+    });
   }
 
   addNodeProperty() {
@@ -121,6 +98,15 @@ export class Neo4jNodeInfoCardComponent implements OnInit {
 
   deleteNodeLabel(index: number) {
     this.node.labels.splice(index, 1);
+  }
+
+  openList() {
+    const componentRefOnNavigation: ComponentRef<any> = this.commandNavigatorService.navigate('POPUPLIST[LOCATE:(ID=73ebafde-77c7-47e5-8f6c-82891c5d9c23),RETURN:cf_cpe_name,FOCUS:header-filter-cf_cpe_name,DISPLAY:(asset.detailed_cpe)]');
+    componentRefOnNavigation.instance.setPresetCommand('POPUPLIST[LOCATE:(ID=73ebafde-77c7-47e5-8f6c-82891c5d9c23),RETURN:cf_cpe_name,FOCUS:header-filter-cf_cpe_name,DISPLAY:(asset.detailed_cpe)]');
+    componentRefOnNavigation.instance.selectEmmiter.subscribe((returningValues: string[]) => {
+      console.log(returningValues);
+      console.log(returningValues['RETURN']);
+    });
   }
 
 }

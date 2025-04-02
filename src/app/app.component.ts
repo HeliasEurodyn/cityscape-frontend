@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponceService} from './services/system/sofia/http-error-responce.service';
 import {NotificationService} from './services/system/sofia/notification.service';
 import {SettingsService} from './services/crud/sofia/settings.service';
+import { RmtService } from './services/crud/cityscape/rmt.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit {
                      private httpErrorResponceService: HttpErrorResponceService,
                      private notificationService: NotificationService,
                      private title: Title,
-                     private settingsService: SettingsService) {
+                     private settingsService: SettingsService,
+                     private rmtService: RmtService) {
   }
 
   ngOnInit(): void {

@@ -28,8 +28,8 @@
             <td><input type="text" class="form-control-plaintext" [(ngModel)]="relationship.type" [readonly]="relationship?.identity != null"></td>
         </tr>
         <tr *ngFor="let property of relationship.properties; let i = index">
-            <td><button title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
-                        class="fa-solid fa-close" (click)="deleteRelationshipProperty(i)"></i></button></td>
+            <td><button (click)="deleteRelationshipProperty(i)" title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
+                        class="fa-solid fa-close"></i></button></td>
             <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.name"
                     [readonly]="property.name == 'ngsocColor'"></td>
             <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.value"
@@ -40,5 +40,5 @@
 <div *ngIf="relationship" class="button-container">
     <button title="Add" type="button" (click)="addRelationshipProperty()" class="btn btn-outline-success btn-icon btn-sm m-0"><i
             class="fa-solid fa-plus"></i></button>
-    <input type="color" id="html5colorpicker" (change)="changeColor($event)" [value]="nodeColor">
+    
 </div>

@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Neo4jNodeDTO, Neo4jNodePositionDTO, Neo4jNodePropertyDTO } from 'app/dtos/cityscape/neo4j/neo4j-node-dto';
 import { Neo4jRelationshipDTO } from 'app/dtos/cityscape/neo4j/neo4j-relationship-dto';
 import { Neo4jService } from 'app/services/crud/cityscape/neo4j.service';
 import cytoscape from 'cytoscape';
+// import { cytoscape_ } from 'cytoscape-node-html-label';
 import { Neo4jNodeInfoCardComponent } from '../neo4j-node-info-card/neo4j-node-info-card.component';
-import { identity, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Neo4jRelationshipInfoCardComponent } from '../neo4j-relationship-info-card/neo4j-relationship-info-card.component';
-import { animation } from '@angular/animations';
 
+
+// cytoscape.use(cytoscape_);
 
 @Component({
   selector: 'app-neo4j-graph',
@@ -37,8 +39,10 @@ export class Neo4jGraphComponent {
 
 
   private nodeCreationSubscription!: Subscription;
+  private nodeUpdateSubscription!: Subscription;
   private nodeDeletionSubscription!: Subscription;
   private relationshipCreationSubscription!: Subscription;
+  private relationshipUpdateSubscription!: Subscription;
   private relationshipDeletionSubscription!: Subscription;
 
 
@@ -55,11 +59,17 @@ export class Neo4jGraphComponent {
     this.nodeCreationSubscription = this.neo4jService.nodeCreated$.subscribe(node => {
       this.handleNodeCreation(node);
     });
+    this.nodeUpdateSubscription = this.neo4jService.nodeUpdated$.subscribe(node => {
+      this.handleNodeUpdate(node);
+    });
     this.nodeDeletionSubscription = this.neo4jService.nodeDeleted$.subscribe(() => {
       this.handleNodeDeletion();
     });
     this.relationshipCreationSubscription = this.neo4jService.relationshipCreated$.subscribe(relationship => {
       this.handleRelationshipCreation(relationship);
+    });
+    this.relationshipUpdateSubscription = this.neo4jService.relationshipUpdated$.subscribe(relationship => {
+      this.handleRelationshipUpdate(relationship);
     });
     this.relationshipDeletionSubscription = this.neo4jService.relationshipDeleted$.subscribe(() => {
       this.handleRelationshipDeletion();
@@ -88,20 +98,29 @@ export class Neo4jGraphComponent {
       const posX = obj.properties.find(prop => prop.name === 'ngsocPosX')?.value ?? null;
       const posY = obj.properties.find(prop => prop.name === 'ngsocPosY')?.value ?? null;
 
+      let style = {
+        'background-color': color
+      }
+
+      // Set image to node with id = 4 (dokimastiko)
+      // if (obj.identity == 4) {
+      //   const imageStyle = {
+      //     'background-image': './assets/img/server.png',
+      //     'background-fit': 'contain',
+      //     'background-clip': 'none',
+      //     'background-color': '#ffffff',
+      //   };
+      //   style = imageStyle;
+      // }
+
       return {
         data: {
           id: obj.identity,
           label: name,
-          // type: 'Atest',
           neo4jNode: obj
         },
         position: { x: posX, y: posY },
-        style: {
-          'background-color': color,
-          // 'border-width': 5,
-          // 'border-color': '#6bd098',
-          // 'border-style': 'solid'
-        }
+        style: style
       }
 
     });
@@ -169,9 +188,34 @@ export class Neo4jGraphComponent {
           selector: '.highlighted',
           style: {
             'border-width': '3px',
-            'border-color': '#2891e2'
+            'border-color': '#2891e2',
+
+            // 'shadow-blur': 20,        // Soft glow effect
+            // 'shadow-color': '#0b0c0c',
+            // 'shadow-opacity': 0.8,
+            // 'shadow-offset-x': 0,
+            // 'shadow-offset-y': 0
           }
         },
+        // {
+        //   selector: 'node:selected',
+        //   style: {
+        //     'overlay-padding': 25, // Expands the clickable area around the node
+        //     'overlay-color': 'rgba(40, 145, 226, 0.3)', // Semi-transparent blue bounding box effect
+        //     'overlay-opacity': 0.8
+        //   }
+
+        // },
+        // {
+        //   selector: 'node:selected',
+        //   style: {
+        //     'shadow-blur': 10,   // Soft glow effect
+        //     'shadow-color': '#2891e2',
+        //     'shadow-opacity': 0.8,
+        //     'shadow-offset-x': 0,
+        //     'shadow-offset-y': 0
+        //   }
+        // },
         {
           selector: 'edge',
           style: {
@@ -304,13 +348,10 @@ export class Neo4jGraphComponent {
     // Node click event
     this.cy.on('click', 'node', (event) => {
       if (this.sourceCytoElement != null && this.targetCytoElement == null) {
-
         event.target.addClass('highlighted');
         this.targetCytoElement = event.target;
-
         const startNode = this.sourceCytoElement.data().neo4jNode;
         const endNode = this.targetCytoElement.data().neo4jNode;
-
         const newRelationship = new Neo4jRelationshipDTO(null, startNode.identity, endNode.identity, null, [])
         this.relationshipCard.setRelationship(newRelationship);
         this.infoCardState = 'create-relationship';
@@ -345,17 +386,10 @@ export class Neo4jGraphComponent {
           this.clearRelationshipSelections();
         }
       }
-      // else if (this.infoCardState == 'edit-relationship') {
-      //   // console.log('hiiiiiiiiiiiiiiiiii');
-      //   if (this.selectedCytoElement.isEdge()) {
-      //     console.log('hiiiiiiiiiiiiiiiiii');
-      //   }
-      //   console.log(this.selectedCytoElement);
-      //   this.selectedCytoElement.select();
-      // }
     });
 
 
+    // Edge unselect event
     this.cy.on('unselect', 'edge', (event) => {
       if (this.infoCardState == 'edit-relationship') {
         this.selectedCytoElement.select();
@@ -386,7 +420,6 @@ export class Neo4jGraphComponent {
     // Background double-click event
     this.cy.on('dblclick', (event) => {
       if (event.target === this.cy) {
-        console.log('Background area was double-clicked!');
         this.selectedCytoElement = null;
         this.infoCardState = 'create-node';
         this.infoCardVisibility = true;
@@ -479,18 +512,10 @@ export class Neo4jGraphComponent {
 
   infoCardSave() {
     if (this.infoCardState == 'edit-node' && this.selectedCytoElement.isNode()) {
-      const neo4jNode = this.nodeCard.saveNode(this.selectedCytoElement.data().neo4jNode.identity);
-      const nameProperty = neo4jNode.properties.find(prop => prop.name === 'name');
-      const name = nameProperty?.value ?? `Node ${neo4jNode.identity}`;
-      this.selectedCytoElement.style('label', name);
-      const colorProperty = neo4jNode.properties.find(prop => prop.name === 'ngsocColor');
-      if (colorProperty) {
-        const color = colorProperty?.value ?? '#FF5733';
-        this.selectedCytoElement.style('background-color', color);
-      }
+      this.nodeCard.updateNodeToServer(this.selectedCytoElement.data().neo4jNode.identity);
     }
     else if (this.infoCardState == 'edit-relationship' && this.selectedCytoElement.isEdge()) {
-      const neo4jRelationship = this.relationshipCard.saveRelationship(this.selectedCytoElement.data().neo4jRelationship.identity);
+      this.relationshipCard.updateRelationshipToServer();
     }
   }
 
@@ -523,15 +548,18 @@ export class Neo4jGraphComponent {
         this.selectedCytoElement.removeClass('highlighted');
         this.selectedCytoElement = null;
         this.infoCardState = 'none';
+        break;
       }
       case 'create-node': {
         this.selectedCytoElement = null;
         this.infoCardState = 'none';
+        break;
       }
       case 'edit-relationship': {
         this.infoCardState = 'none';
         this.selectedCytoElement.unselect();
         this.selectedCytoElement = null;
+        break;
       }
       case 'create-relationship': {
         this.sourceCytoElement.removeClass('highlighted');
@@ -539,6 +567,7 @@ export class Neo4jGraphComponent {
         this.sourceCytoElement = null;
         this.targetCytoElement = null;
         this.infoCardState = 'none';
+        break;
       }
     }
   }
@@ -566,6 +595,26 @@ export class Neo4jGraphComponent {
   }
 
 
+  handleNodeUpdate(node: Neo4jNodeDTO) {
+    if (this.selectedCytoElement != null && this.selectedCytoElement.isNode() && this.selectedCytoElement.data().neo4jNode.identity == node.identity) {
+      this.selectedCytoElement.data().neo4jNode = JSON.parse(JSON.stringify(node));
+      const name = node.properties.find(prop => prop.name === 'name')?.value ?? `Node ${node.identity}`;
+      this.selectedCytoElement.style('label', name);  // Update name
+      const colorProperty = node.properties.find(prop => prop.name === 'ngsocColor');
+      if (colorProperty) {
+        const color = colorProperty?.value ?? '#FF5733';
+        this.selectedCytoElement.style('background-color', color);  // Update color
+      }
+    }
+  }
+
+  handleNodeDeletion() {
+    this.selectedCytoElement.remove();
+    this.infoCardVisibility = false;
+    this.selectedCytoElement = null;
+  }
+
+
   handleRelationshipCreation(relationship: Neo4jRelationshipDTO) {
     this.cy.add({
       data: {
@@ -586,13 +635,13 @@ export class Neo4jGraphComponent {
     this.relationshipCard.setRelationship(relationship);
   }
 
-
-  handleNodeDeletion() {
-    this.selectedCytoElement.remove();
-    this.infoCardVisibility = false;
-    this.selectedCytoElement = null;
+  handleRelationshipUpdate(relationship: Neo4jRelationshipDTO) {
+    console.log('hiiiiiiiiiiiiiiiiiiii x333');
+    if (this.selectedCytoElement != null && this.selectedCytoElement.isEdge() && this.selectedCytoElement.data().neo4jRelationship.identity == relationship.identity) {
+      console.log('hiiiiiiiiiiiiiiiiiiii x444');
+      this.selectedCytoElement.data().neo4jRelationship = JSON.parse(JSON.stringify(relationship));
+    }
   }
-
 
   handleRelationshipDeletion() {
     this.selectedCytoElement.remove();

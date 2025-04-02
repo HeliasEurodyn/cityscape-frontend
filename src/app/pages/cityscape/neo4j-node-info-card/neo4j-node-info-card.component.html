@@ -3,7 +3,7 @@
     <div class="row chip-row">
         <div *ngFor="let label of node.labels; let i = index" class="col-auto chip-col">
             <button class="btn btn-outline-primary btn-round btn-chips">
-                <i class="fa fa-times btn-delete-node" (click)="deleteNodeLabel(i)"></i>
+                <i (click)="deleteNodeLabel(i)" class="fa fa-times btn-delete-node"></i>
                 {{ label }}
             </button>
         </div>
@@ -11,9 +11,9 @@
         <div class="col-auto chip-col">
             <div class="input-group">
                 <input type="text" class="form-control rounded-pill" placeholder="Add label" [(ngModel)]="newLabel" style="border: 2px solid #51cbce;">
-                <span class="input-group-text bg-white border-0">
-                    <i style="color: #52cbce" class="fa fa-plus" (click)="addNodeLabel()"></i>
-                </span>
+                <button (click)="addNodeLabel()" class="btn bg-white border-0 p-0 pl-2 m-0">
+                    <i style="color: #52cbce" class="fa fa-plus fa-lg"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
             <td><input type="text" class="form-control-plaintext" value="{{ node?.identity }}" readonly></td>
         </tr>
         <tr *ngFor="let property of node.properties; let i = index">
-            <td><button title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
+            <td><button (click)="deleteNodeProperty(i)" title="Delete" type="button" class="btn btn-outline-danger btn-icon btn-sm m-0"><i
                         class="fa-solid fa-close" (click)="deleteNodeProperty(i)"></i></button></td>
             <td><input type="text" class="form-control-plaintext" [(ngModel)]="property.name"
                     [readonly]="property.name == 'ngsocColor'"></td>
@@ -46,5 +46,8 @@
 <div *ngIf="node" class="button-container">
     <button title="Add" type="button" (click)="addNodeProperty()" class="btn btn-outline-success btn-icon btn-sm m-0"><i
             class="fa-solid fa-plus"></i></button>
-    <input type="color" id="html5colorpicker" (change)="changeColor($event)" [value]="nodeColor">
+    <input type="color" id="html5colorpicker" (change)="changeColor($event)" [(ngModel)]="nodeColor">
+    <button title="Add" type="button" (click)="openList()" class="btn btn-outline-info btn-icon btn-sm m-0">
+        <i class="fa-solid fa-shield-halved"></i> 
+    </button>
 </div>
